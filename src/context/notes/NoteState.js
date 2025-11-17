@@ -2,94 +2,78 @@ import { useState } from "react";
 import NoteContext from "./noteContext";
 
 const NoteState = (props) => {
-  const initialNotes = [
-    {
-      _id: "6915c510ba63bc438bd2668c1",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.638Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e2",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e3",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e4",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e5",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-    {
-      _id: "6915c510ba63bc438bd2668e6",
-      userId: "69146fc65bad787807791c0c",
-      title: "My title",
-      description: "Description foes here....",
-      tag: "Personal",
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    },
-  ];
+  const host = "http://localhost:5000";
+  const initialNotes = [];
   const [notes, setNotes] = useState(initialNotes);
 
-  // Add a note
-  const addNote = (title, description, tag) => {
-    const note = {
-      _id: "6915c510ba63bc438bd2668e6",
-      userId: "69146fc65bad787807791c0c",
-      title: title,
-      description: description,
-      tag: tag,
-      date: "2025-11-13T11:46:24.792Z",
-      __v: 0,
-    };
+  const getAllNotes = async () => {
+    // API Call - fetch all Notes:
+    let allNotes = [];
+    try {
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxNDZmYzY1YmFkNzg3ODA3NzkxYzBjIn0sImlhdCI6MTc2Mjk0NzMxNX0.CEfU8r8YlOSaYiK39J2qFG4aAcmmdOVAQz_UvPq8gFk",
+        },
+      });
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const result = await response.json();
+      console.log(result);
+      // Client Side Logic - fetch all Notes:
+      setNotes(result); //addes new note and return the new array of notes. We intentially do not used push here
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
-    setNotes(notes.concat(note)); //addes new note and return the new array of notes. We intentially do not used push here
+  const addNote = async (title, description, tag) => {
+    // API Call - Add a Note:
+    try {
+      const data = {
+        title,
+        description,
+        tag,
+      };
+
+      const response = await fetch(`${host}/api/notes/addnote`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token":
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiNjkxNDZmYzY1YmFkNzg3ODA3NzkxYzBjIn0sImlhdCI6MTc2Mjk0NzMxNX0.CEfU8r8YlOSaYiK39J2qFG4aAcmmdOVAQz_UvPq8gFk",
+        },
+        body: JSON.stringify(data),
+      });
+      if (!response.ok) {
+        throw new Error(`Response status: ${response.status}`);
+      }
+      const result = await response.json();
+      console.log(result);
+      // Client Side Logic - fetch all Notes:
+      getAllNotes(); // to get latest notes from server. To keep single copy of notes displayed and stored(self-coded).
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   // Delete a note
-  const deleteNote = () => {};
+  const deleteNote = (id) => {
+    console.log(id);
+    const newNotes = notes.filter((note) => note._id !== id);
+    setNotes(newNotes);
+  };
   // Edit a note
-  const editNote = () => {};
+  const editNote = (id) => {
+    console.log(id);
+  };
   return (
-    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote }}>
+    <NoteContext.Provider
+      value={{ notes, getAllNotes, addNote, deleteNote, editNote }}
+    >
       {props.children}
     </NoteContext.Provider>
   );

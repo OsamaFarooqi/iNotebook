@@ -1,10 +1,17 @@
 const connectToMongo = require("./db");
 const express = require("express");
+const cors = require("cors");
 
 connectToMongo();
 const app = express();
 const port = 5000;
 
+// Use the cors middleware
+app.use(
+  cors({
+    origin: `http://localhost:3000`, // Specify the exact origin of your frontend. 3000 is port for frontend React App.
+  })
+);
 // To use req.body we need to use this
 app.use(express.json());
 

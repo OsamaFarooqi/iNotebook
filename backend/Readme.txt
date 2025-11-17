@@ -7,3 +7,4 @@ Started with
 - npm install express-validator
 - npm i bcrypt (to encript the password with hash and salt)
 - npm i jsonwebtoken (to issue web tokens for authenticated users)
+- npm i cors (to fix CORS issue while fetching the data using fetch app from localhost using browser)
