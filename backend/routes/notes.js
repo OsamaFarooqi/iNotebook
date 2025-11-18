@@ -8,7 +8,7 @@ const fetchuser = require("../middleware/fetchuser");
 router.get("/fetchallnotes", fetchuser, async (req, res) => {
   try {
     const notes = await Note.find();
-    console.log(notes);
+    // console.log(notes);
     res.json(notes);
   } catch (error) {
     console.error(error.message);
@@ -30,6 +30,7 @@ router.post(
     const errors = await validationResult(req);
     // cheack if there is any error, return with 400 response code and error messages in json formate.
     if (!errors.isEmpty()) {
+      //console.log({ error: errors.array() });
       return res.status(400).json({ error: errors.array() });
     }
     try {
@@ -83,7 +84,11 @@ router.put("/updatenote/:id", fetchuser, async (req, res) => {
       { $set: newNote },
       { new: true }
     );
-    res.send("Note Updated Successfully!").json(note);
+    res.status(200).json({
+      success: true,
+      message: "Note Updated Successfully!",
+      note,
+    });
   } catch (error) {
     console.error(error.message);
     res.status(500).send(`Internal server error. ${error.message}`);

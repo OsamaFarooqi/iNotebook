@@ -35,6 +35,8 @@ const AddNote = () => {
               name="title"
               aria-describedby="titleHelp"
               onChange={change}
+              minLength={3}
+              required
             />
           </div>
           <div className="mb-3">
@@ -47,6 +49,22 @@ const AddNote = () => {
               id="description"
               name="description"
               onChange={change}
+              minLength={5}
+              required
+            />
+          </div>
+          <div className="mb-3">
+            <label htmlFor="tag" className="form-label">
+              Tag
+            </label>
+            <input
+              type="text"
+              className="form-control"
+              id="tag"
+              name="tag"
+              onChange={change}
+              minLength={3}
+              required
             />
           </div>
           <button
