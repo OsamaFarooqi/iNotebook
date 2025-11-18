@@ -88,7 +88,7 @@ const Notes = () => {
                     aria-describedby="titleHelp"
                     onChange={onChange}
                     minLength={3}
-                    required
+                    required // this will not work here bcz, in this example we used custom button click instead of form submit funtionality
                   />
                 </div>
                 <div className="mb-3">
